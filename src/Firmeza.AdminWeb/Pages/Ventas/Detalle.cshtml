@@ -1,0 +1,121 @@
+@page
+@model Firmeza.AdminWeb.Pages.Ventas.DetalleModel
+@{
+    ViewData["Title"] = $"Detalle de Venta #{Model.Venta?.Id}";
+}
+
+<div class="container" style="max-width: 900px;">
+    <!-- Control de Navegación -->
+    <div class="mb-3 d-print-none">
+        <a href="/Ventas/Index" class="text-muted text-decoration-none small">
+            <i class="bi bi-arrow-left"></i> Volver al Historial
+        </a>
+    </div>
+
+    <!-- Encabezado de la Factura / Remisión -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+            <div>
+                <h3 class="fw-bold m-0 text-dark">FIRMEZA SAS</h3>
+                <small class="text-muted">Distribuidora de Materiales de Construcción</small>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-dark text-warning p-2 fs-6 mb-1">FACTURA DE VENTA</span>
+                <h5 class="fw-bold m-0 text-muted">No. #@Model.Venta?.Id</h5>
+            </div>
+        </div>
+
+        <!-- Información Bilateral (Empresa y Cliente) -->
+        <div class="row g-3 mb-4" style="font-size: 0.9rem;">
+            <div class="col-sm-6">
+                <span class="text-uppercase small fw-bold text-muted d-block mb-1">Emitido por:</span>
+                <strong class="text-dark">Firmeza SAS Administrativo</strong><br>
+                <span class="text-muted">Soporte Operativo Central</span>
+            </div>
+            <div class="col-sm-6 text-sm-end">
+                <span class="text-uppercase small fw-bold text-muted d-block mb-1">Facturado a:</span>
+                <strong class="text-dark">@Model.Venta?.Cliente.Usuario.NombreCompleto</strong><br>
+                <span class="text-muted">Doc: @Model.Venta?.Cliente.Documento</span><br>
+                <span class="text-muted">Tel: @Model.Venta?.Cliente.Telefono</span>
+            </div>
+        </div>
+
+        <div class="row border-top pt-3" style="font-size: 0.9rem;">
+            <div class="col-sm-6">
+                <span class="text-muted">Fecha de Expedición:</span>
+                <strong class="text-dark">@Model.Venta?.Fecha.ToString("dd/MM/yyyy hh:mm tt")</strong>
+            </div>
+            <div class="col-sm-6 text-sm-end">
+                <span class="text-muted">Estado de Pago:</span>
+                <strong class="text-success"><i class="bi bi-patch-check-fill"></i> Procesado & Despachado</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desglose de Materiales Comprados -->
+    <div class="card border-0 shadow-sm bg-white overflow-hidden mb-4">
+        <div class="card-header bg-light border-0 py-3">
+            <h6 class="fw-bold m-0 text-secondary">Items Incluidos en la Orden</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-clear align-middle mb-0">
+                <thead class="table-light small text-uppercase fw-bold text-muted">
+                    <tr>
+                        <th class="ps-4">Código</th>
+                        <th>Descripción del Material</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-end">Precio Unitario</th>
+                        <th class="text-end pe-4">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detalle in Model.Venta!.Detalles)
+                    {
+                        var subtotalItem = detalle.PrecioUnitario * detalle.Cantidad;
+                        <tr>
+                            <td class="ps-4 text-muted">@detalle.Producto.Codigo</td>
+                            <td class="fw-bold text-dark">@detalle.Producto.Nombre</td>
+                            <td class="text-center"><span class="badge bg-light text-dark border px-3 py-1">@detalle.Cantidad Uds</span></td>
+                            <td class="text-end">@detalle.PrecioUnitario.ToString("C2")</td>
+                            <td class="text-end pe-4 fw-semibold">$@subtotalItem.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bloque de Liquidación e Impuestos -->
+    <div class="row justify-content-end">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm p-3 bg-white" style="font-size: 0.95rem;">
+                @{
+                    // Cálculo inverso del subtotal para pintar de forma desglosada
+                    var total = Model.Venta.Total;
+                    var iva = Model.Venta.Iva;
+                    var subtotalNeto = total - iva;
+                }
+                <div class="d-flex justify-content-between text-muted mb-2">
+                    <span>Subtotal Neto:</span>
+                    <span>$@subtotalNeto.ToString("N2")</span>
+                </div>
+                <div class="d-flex justify-content-between text-muted mb-2">
+                    <span>Impuesto IVA (19%):</span>
+                    <span>@Model.Venta.Iva.ToString("C2")</span>
+                </div>
+                <hr class="my-2">
+                <div class="d-flex justify-content-between fw-bold text-dark fs-5">
+                    <span>Total Facturado:</span>
+                    <span class="text-success">@Model.Venta.Total.ToString("C2")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón Auxiliar de Impresión Física -->
+    <div class="text-end mt-4 d-print-none">
+        <button onclick="window.print();" class="btn btn-outline-dark fw-semibold">
+            <i class="bi bi-printer-fill me-1"></i> Imprimir Copia
+        </button>
+    </div>
+</div>

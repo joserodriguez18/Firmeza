@@ -1,0 +1,89 @@
+@page
+@model Firmeza.AdminWeb.Pages.Clientes.IndexModel
+@{
+    ViewData["Title"] = "Gestión de Clientes";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold m-0 text-dark">Directorio de Clientes</h2>
+            <p class="text-muted m-0">Administración de perfiles comerciales, documentos y cuentas de acceso.</p>
+        </div>
+        <a href="/Clientes/Crear" class="btn btn-dark fw-bold text-warning">
+            <i class="bi bi-person-plus-fill me-1"></i> Registrar Cliente
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.MensajeExito))
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-start border-success border-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @Model.MensajeExito
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Barra de Búsqueda (Task 8) -->
+    <div class="card border-0 shadow-sm p-3 mb-4 bg-white">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" asp-for="Buscar" class="form-control border-start-0 bg-light shadow-none" placeholder="Buscar por nombre, documento (cédula) o correo..." />
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <button type="submit" class="btn btn-outline-dark w-100 fw-semibold">Filtrar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabla Responsiva -->
+    <div class="card border-0 shadow-sm bg-white overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-uppercase font-weight-bold" style="font-size: 0.85rem;">
+                    <tr>
+                        <th class="ps-4">Documento</th>
+                        <th>Nombre Completo</th>
+                        <th>Correo Electrónico</th>
+                        <th>Teléfono</th>
+                        <th class="text-center">Edad</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Clientes.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-people display-4 d-block mb-3 opacity-50"></i>
+                                No se encontraron clientes registrados en el sistema.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var cliente in Model.Clientes)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold text-muted">@cliente.Documento</td>
+                                <td class="fw-bold text-dark">@cliente.Usuario.NombreCompleto</td>
+                                <td>@cliente.Usuario.Email</td>
+                                <td>@cliente.Telefono</td>
+                                <td class="text-center"><span class="badge bg-light text-dark border">@cliente.Edad años</span></td>
+                                <td class="text-center">
+                                    <form method="post" asp-page-handler="Eliminar" asp-route-id="@cliente.Id" onsubmit="return confirm('¿Eliminar cliente? Se borrarán de forma permanente sus datos comerciales y de inicio de sesión.');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

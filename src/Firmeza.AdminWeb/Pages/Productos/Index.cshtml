@@ -1,0 +1,106 @@
+@page
+@model Firmeza.AdminWeb.Pages.Productos.IndexModel
+@{
+    ViewData["Title"] = "Gestión de Productos";
+}
+
+<div class="container-fluid">
+    <!-- Encabezado del Módulo -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold m-0 text-dark">Catálogo de Productos</h2>
+            <p class="text-muted m-0">Administración de materiales de construcción e inventarios generales.</p>
+        </div>
+        <a href="/Productos/Crear" class="btn btn-dark fw-bold text-warning">
+            <i class="bi bi-plus-lg me-1"></i> Nuevo Producto
+        </a>
+    </div>
+
+    <!-- Mensajes de Notificación -->
+    @if (!string.IsNullOrEmpty(Model.MensajeExito))
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-start border-success border-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @Model.MensajeExito
+            <button type="submit" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Barra de Herramientas (Búsqueda y Filtro - Task 6) -->
+    <div class="card border-0 shadow-sm p-3 mb-4 bg-white">
+        <form method="get" class="row g-3 align-items-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" asp-for="Buscar" class="form-control border-start-0 bg-light shadow-none" placeholder="Buscar por nombre o código de barras..." />
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <button type="submit" class="btn btn-outline-dark w-100 fw-semibold">
+                    Filtrar Resultados
+                </button>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Buscar))
+            {
+                <div class="col-auto">
+                    <a href="/Productos/Index" class="text-decoration-none btn btn-link text-muted small p-0 m-0">Limpiar Filtro</a>
+                </div>
+            }
+        </form>
+    </div>
+
+    <!-- Tabla de Contenido Responsiva (Task 9) -->
+    <div class="card border-0 shadow-sm bg-white overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-uppercase font-weight-bold" style="font-size: 0.85rem;">
+                    <tr>
+                        <th class="ps-4" style="width: 10%;">Código</th>
+                        <th style="width: 40%;">Nombre del Material</th>
+                        <th class="text-end" style="width: 15%;">Precio Unitario</th>
+                        <th class="text-center" style="width: 15%;">Stock Disponible</th>
+                        <th class="text-center ps-4" style="width: 20%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Productos.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-box-seam display-4 d-block mb-3 opacity-50"></i>
+                                No se encontraron productos registrados en el sistema.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var prod in Model.Productos)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-semibold text-muted">@prod.Codigo</td>
+                                <td class="fw-bold text-dark">@prod.Nombre</td>
+                                <td class="text-end fw-semibold">@prod.Precio.ToString("C2")</td>
+                                <td class="text-center">
+                                    <span class="badge @(prod.Stock > 10 ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger") px-3 py-2 rounded-pill fw-bold">
+                                        @prod.Stock Uds
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="/Productos/Editar?id=@prod.Id" class="btn btn-sm btn-outline-secondary" title="Editar Información">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form method="post" asp-page-handler="Eliminar" asp-route-id="@prod.Id" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto del catálogo corporativo?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar del Sistema">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

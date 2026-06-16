@@ -1,0 +1,62 @@
+@page
+@model Firmeza.AdminWeb.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Dashboard Principal";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="fw-bold">Bienvenido al Panel de Control</h2>
+            <p class="text-muted">Resumen en tiempo real del estado de distribución de materiales de construcción.</p>
+        </div>
+    </div>
+
+    <!-- TARJETAS DE MÉTRICAS (Task 5) -->
+    <div class="row g-4">
+        <!-- Tarjeta Productos -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-primary border-4 h-100 p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-muted text-uppercase small font-weight-bold">Total Productos</h6>
+                        <h2 class="fw-bold m-0 text-primary">@Model.TotalProductos</h2>
+                    </div>
+                    <div class="bg-light p-3 rounded">
+                        <i class="bi bi-box-seam text-primary fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta Clientes -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-success border-4 h-100 p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-muted text-uppercase small font-weight-bold">Total Clientes</h6>
+                        <h2 class="fw-bold m-0 text-success">@Model.TotalClientes</h2>
+                    </div>
+                    <div class="bg-light p-3 rounded">
+                        <i class="bi bi-people text-success fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta Ventas -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-warning border-4 h-100 p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-muted text-uppercase small font-weight-bold">Total Ventas</h6>
+                        <h2 class="fw-bold m-0 text-warning">@Model.TotalVentas</h2>
+                    </div>
+                    <div class="bg-light p-3 rounded">
+                        <i class="bi bi-cart-check text-warning fs-3"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

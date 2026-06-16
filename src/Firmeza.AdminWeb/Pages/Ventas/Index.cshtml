@@ -1,0 +1,63 @@
+@page
+@model Firmeza.AdminWeb.Pages.Ventas.IndexModel
+@{
+    ViewData["Title"] = "Historial de Ventas";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold m-0 text-dark">Registro de Ventas</h2>
+            <p class="text-muted m-0">Consolidado e historial de órdenes de salida de materiales.</p>
+        </div>
+        <a href="/Ventas/Nueva" class="btn btn-dark fw-bold text-warning">
+            <i class="bi bi-cart-plus-fill me-1"></i> Nueva Venta
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm bg-white overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-uppercase font-weight-bold" style="font-size: 0.85rem;">
+                    <tr>
+                        <th class="ps-4">No. Venta</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th class="text-end">IVA (19%)</th>
+                        <th class="text-end">Total Facturado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Ventas.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-cart-x display-4 d-block mb-3 opacity-50"></i>
+                                No se han registrado transacciones comerciales aún.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var venta in Model.Ventas)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold text-muted"># @venta.Id</td>
+                                <td>@venta.Fecha.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                <td class="fw-bold text-dark">@venta.Cliente.Usuario.NombreCompleto</td>
+                                <td class="text-end text-muted">@venta.Iva.ToString("C2")</td>
+                                <td class="text-end fw-bold text-success">@venta.Total.ToString("C2")</td>
+                                <td class="text-center">
+                                    <a href="/Ventas/Detalle?id=@venta.Id" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye-fill"></i> Ver Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

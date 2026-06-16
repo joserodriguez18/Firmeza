@@ -1,0 +1,69 @@
+@page
+@model Firmeza.AdminWeb.Pages.Productos.EditarModel
+@{
+    ViewData["Title"] = "Editar Producto";
+}
+
+<div class="container" style="max-width: 800px;">
+    <div class="mb-3">
+        <a href="/Productos/Index" class="text-muted text-decoration-none small"><i class="bi bi-arrow-left"></i> Volver al Catálogo</a>
+    </div>
+
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="fw-bold m-0 text-dark">Modificar Material de Construcción</h2>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorExcepcion))
+    {
+        <div class="alert alert-danger shadow-sm border-start border-danger border-4 d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+            <div>
+                <strong class="d-block">Error en procesamiento de datos</strong>
+                <span class="small">@Model.ErrorExcepcion</span>
+            </div>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm p-4 bg-white">
+        <form method="post">
+            <!-- Campo oculto indispensable para saber qué ID estamos modificando -->
+            <input type="hidden" asp-for="Input.Id" />
+
+            <div class="row g-3">
+                
+                <div class="col-md-8">
+                    <label asp-for="Input.Nombre" class="form-label fw-semibold text-muted small">Nombre Comercial del Material</label>
+                    <input asp-for="Input.Nombre" class="form-control bg-light" />
+                    <span asp-validation-for="Input.Nombre" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Input.Codigo" class="form-label fw-semibold text-muted small">Código / SKU</label>
+                    <input asp-for="Input.Codigo" class="form-control bg-light" />
+                    <span asp-validation-for="Input.Codigo" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Input.Precio" class="form-label fw-semibold text-muted small">Precio de Distribución (COP)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-muted border-end-0">$</span>
+                        <input asp-for="Input.Precio" class="form-control bg-light border-start-0 shadow-none" type="number" step="0.01" />
+                    </div>
+                    <span asp-validation-for="Input.Precio" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-muted small">Inventario / Stock Disponible</label>
+                    <input asp-for="StockTexto" class="form-control bg-light" type="text" />
+                    <span asp-validation-for="StockTexto" class="text-danger small"></span>
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                <a href="/Productos/Index" class="btn btn-light fw-semibold text-muted px-4">Cancelar</a>
+                <button type="submit" class="btn btn-dark fw-bold text-warning px-4">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
