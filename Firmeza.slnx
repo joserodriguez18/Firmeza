@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <File Path="README.md" />
     <Project Path="src/Firmeza.AdminWeb/Firmeza.AdminWeb.csproj" />
     <Project Path="src/Firmeza.Core/Firmeza.Core.csproj" />
     <Project Path="src/Firmeza.Infrastructure/Firmeza.Infrastructure.csproj" />

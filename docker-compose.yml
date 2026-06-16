@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  firmeza-db:
+    image: postgres:16-alpine
+    container_name: firmeza_postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: SecretPassword123
+      POSTGRES_DB: FirmezaDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - firmeza-net
+
+  firmeza-web:
+    build:
+      context: .
+      dockerfile: src/Firmeza.AdminWeb/Dockerfile
+    container_name: firmeza_razor_app
+    ports:
+      - "8080:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=firmeza-db;Port=5432;Database=FirmezaDB;Username=postgres;Password=SecretPassword123
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - firmeza-db
+    networks:
+      - firmeza-net
+
+volumes:
+  pgdata:
+
+networks:
+  firmeza-net:
+    driver: bridge
