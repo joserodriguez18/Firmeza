@@ -5,6 +5,7 @@
 
 # dotenv files
 .env
+src/Firmeza.AdminWeb/appsettings.json
 
 # User-specific files
 *.rsuser
