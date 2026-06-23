@@ -1,5 +1,5 @@
 ﻿# Etapa 1: Compilación de la aplicación
-FROM ://microsoft.com AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
 # Copiar archivos de proyectos y restaurar dependencias
@@ -15,7 +15,7 @@ COPY . ./
 RUN dotnet publish src/Firmeza.AdminWeb/Firmeza.AdminWeb.csproj -c Release -o /app/publish
 
 # Etapa 2: Entorno de ejecución ligero
-FROM ://microsoft.com AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 8080

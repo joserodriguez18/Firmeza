@@ -35,6 +35,7 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddScoped<Firmeza.Core.Interfaces.IProductoService, Firmeza.Infrastructure.Services.ProductoService>();
 builder.Services.AddScoped<Firmeza.Core.Interfaces.IClienteService, Firmeza.Infrastructure.Services.ClienteService>();
 builder.Services.AddScoped<Firmeza.Core.Interfaces.IVentaService, Firmeza.Infrastructure.Services.VentaService>();
+builder.Services.AddScoped<Firmeza.Core.Interfaces.IDocumentoNegocioService, Firmeza.Infrastructure.Services.DocumentoNegocioService>();
 
 
 builder.Services.AddAuthorization(options =>
@@ -85,8 +86,5 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Ocurrió un error al inicializar los datos de la BD.");
     }
 }
-
-app.Run();
-
 
 app.Run();

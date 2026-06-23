@@ -1,8 +1,12 @@
 using Firmeza.Core.Entities;
+using Firmeza.Core.Models;
 using Firmeza.Infrastructure.Data;
 using Firmeza.Infrastructure.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace Firmeza.Tests;
@@ -21,12 +25,20 @@ public class VentaServiceTests
         return new ApplicationDbContext(opciones);
     }
 
+    private VentaService ObtenerServicio(ApplicationDbContext contexto, string rootPath)
+    {
+        var env = new TestWebHostEnvironment { WebRootPath = rootPath };
+        return new VentaService(contexto, new FakeDocumentoNegocioService(), env);
+    }
+
     [Fact]
     public async Task RegistrarVentaAsync_DeberiaDescontarStockYCalcularTotalesCorrectamente()
     {
         // 1. ARRANGE (Preparar el escenario)
         var contexto = ObtenerContextoEnMemoria();
-        var servicio = new VentaService(contexto);
+        var temp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(temp);
+        var servicio = ObtenerServicio(contexto, temp);
 
         // Crear un producto de prueba con 100 unidades en stock
         var producto = new Producto
@@ -90,7 +102,9 @@ public class VentaServiceTests
     {
         // 1. ARRANGE
         var contexto = ObtenerContextoEnMemoria();
-        var servicio = new VentaService(contexto);
+        var temp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        Directory.CreateDirectory(temp);
+        var servicio = ObtenerServicio(contexto, temp);
 
         var producto = new Producto
             { Id = 2, Nombre = "Varilla Corrugada", Codigo = "VAR-02", Precio = 50000m, Stock = 3 };
@@ -114,4 +128,23 @@ public class VentaServiceTests
         var excepcion = await Assert.ThrowsAsync<Exception>(() => servicio.RegistrarVentaAsync(ventaInvalida));
         Assert.Contains("Stock insuficiente", excepcion.Message);
     }
+}
+
+internal sealed class TestWebHostEnvironment : IWebHostEnvironment
+{
+    public string ApplicationName { get; set; } = string.Empty;
+    public IFileProvider WebRootFileProvider { get; set; } = new NullFileProvider();
+    public string WebRootPath { get; set; } = string.Empty;
+    public string ContentRootPath { get; set; } = string.Empty;
+    public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
+    public string EnvironmentName { get; set; } = Environments.Development;
+}
+
+internal sealed class FakeDocumentoNegocioService : Firmeza.Core.Interfaces.IDocumentoNegocioService
+{
+    public Task<ImportExportResult> ImportarExcelDesnormalizadoAsync(Stream archivoExcel) => Task.FromResult(new ImportExportResult());
+    public Task<byte[]> ExportarProductosExcelAsync() => Task.FromResult(Array.Empty<byte>());
+    public Task<byte[]> ExportarVentasExcelAsync() => Task.FromResult(Array.Empty<byte>());
+    public Task<byte[]> ExportarClientesPdfAsync() => Task.FromResult(Array.Empty<byte>());
+    public Task<byte[]> GenerarReciboVentaPdfAsync(Venta venta) => Task.FromResult(Array.Empty<byte>());
 }

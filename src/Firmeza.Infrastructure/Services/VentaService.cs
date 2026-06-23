@@ -1,17 +1,23 @@
 using Firmeza.Core.Entities;
 using Firmeza.Core.Interfaces;
 using Firmeza.Infrastructure.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Firmeza.Infrastructure.Services;
 
 public class VentaService : IVentaService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IDocumentoNegocioService _documentoService;
+    private readonly IWebHostEnvironment _environment;
 
-    public VentaService(ApplicationDbContext context)
+    public VentaService(ApplicationDbContext context, IDocumentoNegocioService documentoService, IWebHostEnvironment environment)
     {
         _context = context;
+        _documentoService = documentoService;
+        _environment = environment;
     }
 
     public async Task<IEnumerable<Venta>> ObtenerTodasAsync() =>
@@ -43,6 +49,10 @@ public class VentaService : IVentaService
             // 2. Guardar la venta en PostgreSQL
             _context.Ventas.Add(venta);
             await _context.SaveChangesAsync();
+            var pdf = await _documentoService.GenerarReciboVentaPdfAsync(venta);
+            var folder = Path.Combine(_environment.WebRootPath, "recibos");
+            Directory.CreateDirectory(folder);
+            await File.WriteAllBytesAsync(Path.Combine(folder, $"venta-{venta.Id}.pdf"), pdf);
 
             await transaccion.CommitAsync();
         }
