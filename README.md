@@ -9,6 +9,7 @@ Sistema administrativo para gestión de productos, clientes y ventas construido 
 - Generación automática de recibo PDF al registrar una venta.
 - Interfaz administrativa con navegación lateral y estilo unificado.
 - Base inicial de documentación técnica y despliegue con Docker.
+- API REST en `src/Firmeza.Api` con JWT, Swagger y endpoints CRUD.
 
 ## Estructura
 
@@ -50,6 +51,19 @@ La sección administrativa `Documentos` permite:
 - exportar productos en Excel;
 - exportar clientes en PDF;
 - descargar recibos desde `wwwroot/recibos`.
+
+## API
+
+La API queda disponible en desarrollo en `http://localhost:8081`.
+
+Endpoints base:
+
+- `POST /api/auth/login`
+- `GET /api/productos`
+- `GET /api/clientes`
+- `GET /api/ventas`
+
+Swagger está disponible en `/swagger`.
 
 ## Pruebas
 

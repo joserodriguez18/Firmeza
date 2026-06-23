@@ -30,6 +30,23 @@ services:
     networks:
       - firmeza-net
 
+  firmeza-api:
+    build:
+      context: .
+      dockerfile: src/Firmeza.Api/Dockerfile
+    container_name: firmeza_api
+    ports:
+      - "8081:8081"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=firmeza-db;Port=5432;Database=FirmezaDB;Username=postgres;Password=SecretPassword123;Include Error Detail=true
+      - Jwt__Issuer=Firmeza.Api
+      - Jwt__Audience=Firmeza.Clients
+      - Jwt__Key=Firmeza-Api-Dev-Key-Replace-In-Production-1234567890
+    depends_on:
+      - firmeza-db
+    networks:
+      - firmeza-net
+
 volumes:
   pgdata:
 
